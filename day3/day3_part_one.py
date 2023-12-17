@@ -44,21 +44,11 @@ def symbol_appender():
     in the following function i can just do an intersection with the numbers
     which share an index with the symbols
     """
-    for index, row in enumerate(lines_list):
+    for row in lines_list:
         # symbol_appender(index, row)
         for symbol in row["symbols"]:
-            if index == 0:
-                symbol["index"].append(symbol["index"][-1] + 1)
-                continue
-
-            if index == len(lines_list) - 1:
-                # print(row["symbols"])
-                symbol["index"].insert(0, symbol["index"][0] - 1)
-                continue
-
-            else:
-                symbol["index"].insert(0, symbol["index"][0] - 1)
-                symbol["index"].append(symbol["index"][-1] + 1)
+            symbol["index"].insert(0, symbol["index"][0] - 1)
+            symbol["index"].append(symbol["index"][-1] + 1)
     # print(row)
 
 
