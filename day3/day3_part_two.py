@@ -38,7 +38,7 @@ def symbol_appender():
     in the following function i can just do an intersection with the numbers
     which share an index with the symbols
     """
-    for index, row in enumerate(lines_list):
+    for row in lines_list:
         # symbol_appender(index, row)
         for symbol in row["symbols"]:
             symbol["index"].insert(0, symbol["index"][0] - 1)
@@ -46,8 +46,45 @@ def symbol_appender():
     # print(row)
 
 
-def find_adj_numbers(index):
-    ...
+def find_adj_numbers(index, symbol_in_line):
+    # print(symbol_in_line)
+    adjacent_numbers = []
+    symbols_index = symbol_in_line["index"]
+    for number in lines_list[index]["numbers"]:
+        # print("current", number["index"])
+        inter_index = list(set(number["index"]) & set(symbols_index))
+        if inter_index:
+            # print("currents", inter_index)
+            adjacent_numbers.append(number["number"])
+    if index == 0:
+        for number in lines_list[index + 1]["numbers"]:
+            # print("current", number["index"])
+            inter_index = list(set(number["index"]) & set(symbols_index))
+            if inter_index:
+                # print("currents", inter_index)
+                adjacent_numbers.append(number["number"])
+    elif index == len(lines_list) - 1:
+        for number in lines_list[index - 1]["numbers"]:
+            # print("prev", number)
+            inter_index = list(set(number["index"]) & set(symbols_index))
+            if inter_index:
+                # print("prevs", inter_index)
+                adjacent_numbers.append(number["number"])
+    else:
+        for number in lines_list[index - 1]["numbers"]:
+            # print("prev", number)
+            inter_index = list(set(number["index"]) & set(symbols_index))
+            if inter_index:
+                # print("prevs", inter_index)
+                adjacent_numbers.append(number["number"])
+        for number in lines_list[index + 1]["numbers"]:
+            # print("current", number["index"])
+            inter_index = list(set(number["index"]) & set(symbols_index))
+            if inter_index:
+                # print("currents", inter_index)
+                adjacent_numbers.append(number["number"])
+    # print(f"Symbol in line:{symbol_in_line}, adjacent_numbers:{adjacent_numbers}")
+    return symbol_in_line, adjacent_numbers
 
 
 def gear_ratio_finder():
@@ -56,73 +93,24 @@ def gear_ratio_finder():
     of the above and below line and just summs them up
     """
     # pprint(lines_list)
-
+    total_sum = 0
     for index, row in enumerate(lines_list):
         print("index:", index)
-        symbols_in_line = []
+        all_symbols_in_line = []
         for symbol in row["symbols"]:
-            symbols_in_line.append(symbol["symbol"])
-        if "*" in symbols_in_line:
-            # print(row["symbols"])
+            all_symbols_in_line.append(symbol["symbol"])
+        if "*" in all_symbols_in_line:
             for symbol_in_line in lines_list[index]["symbols"]:
-                adjacent_numbers = []
-                symbols_index = symbol_in_line["index"]
-                # print(symbol_in_line)
-                if index == 0:
-                    for number in lines_list[index]["numbers"]:
-                        # print("current", number["index"])
-                        inter_index = list(set(number["index"]) & set(symbols_index))
-                        if inter_index:
-                            # print("currents", inter_index)
-                            adjacent_numbers.append(number["number"])
-                    for number in lines_list[index + 1]["numbers"]:
-                        # print("current", number["index"])
-                        inter_index = list(set(number["index"]) & set(symbols_index))
-                        if inter_index:
-                            # print("currents", inter_index)
-                            adjacent_numbers.append(number["number"])
-                elif index == len(lines_list) - 1:
-                    for number in lines_list[index - 1]["numbers"]:
-                        # print("prev", number)
-                        inter_index = list(set(number["index"]) & set(symbols_index))
-                        if inter_index:
-                            # print("prevs", inter_index)
-                            adjacent_numbers.append(number["number"])
-                    for number in lines_list[index]["numbers"]:
-                        # print("current", number["index"])
-                        inter_index = list(set(number["index"]) & set(symbols_index))
-                        if inter_index:
-                            # print("currents", inter_index)
-                            adjacent_numbers.append(number["number"])
-                else:
-                    for number in lines_list[index - 1]["numbers"]:
-                        # print("prev", number)
-                        inter_index = list(set(number["index"]) & set(symbols_index))
-                        if inter_index:
-                            # print("prevs", inter_index)
-                            adjacent_numbers.append(number["number"])
-                    for number in lines_list[index]["numbers"]:
-                        # print("current", number["index"])
-                        inter_index = list(set(number["index"]) & set(symbols_index))
-                        if inter_index:
-                            # print("currents", inter_index)
-                            adjacent_numbers.append(number["number"])
-                    for number in lines_list[index + 1]["numbers"]:
-                        # print("current", number["index"])
-                        inter_index = list(set(number["index"]) & set(symbols_index))
-                        if inter_index:
-                            # print("currents", inter_index)
-                            adjacent_numbers.append(number["number"])
-                print(
-                    f"Symbol in line:{symbol_in_line}, adjacent_numbers:{adjacent_numbers}"
-                )
-
-                # print("current", lines_list[index]["numbers"])
-
-                # print("next", lines_list[index + 1])
+                adj_num = find_adj_numbers(index, symbol_in_line)
+                if len(adj_num[1]) == 2:
+                    summ = 1
+                    for number in adj_num[1]:
+                        summ *= number
+                    print(summ)
+                    total_sum += summ
+    print(total_sum)
 
     return
-    # print(lines_list[index + 1])
 
 
 if __name__ == "__main__":
@@ -131,12 +119,9 @@ if __name__ == "__main__":
     # )
     lines_list = []
 
-    with open("puzzle_inputs/test3.txt", "r") as file:
+    with open("puzzle_inputs/day3.txt", "r") as file:
         for line in file:
             current_line = line_parser(line)
             lines_list.append(current_line)
-    # print(current_line)
     symbol_appender()
     gear_ratio_finder()
-    # check_neighbours()
-    # print(lines_list)
