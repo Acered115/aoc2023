@@ -1,12 +1,6 @@
 from pprint import pprint
 
 
-def find_symbol_footprint(index, symbol):
-    symbol_object = {}
-
-    # if index==0:
-
-
 def line_parser(line: str):
     """This function just parses each line into its important parts,
     numbers and symbols, it takes not of their indexes as this will be useful later
@@ -31,7 +25,7 @@ def line_parser(line: str):
                 number_buffer = ""
                 number_index_buffer = []
 
-            if x != "." and x != "\n":
+            if x == "*":
                 symbols_list.append({"index": [index], "symbol": x})
     # print(symbols_list)
     # print(number_list)
@@ -47,76 +41,89 @@ def symbol_appender():
     for index, row in enumerate(lines_list):
         # symbol_appender(index, row)
         for symbol in row["symbols"]:
-            if index == 0:
-                symbol["index"].append(symbol["index"][-1] + 1)
-                continue
-
-            if index == len(lines_list) - 1:
-                # print(row["symbols"])
-                symbol["index"].insert(0, symbol["index"][0] - 1)
-                continue
-
-            else:
-                symbol["index"].insert(0, symbol["index"][0] - 1)
-                symbol["index"].append(symbol["index"][-1] + 1)
+            symbol["index"].insert(0, symbol["index"][0] - 1)
+            symbol["index"].append(symbol["index"][-1] + 1)
     # print(row)
 
 
-def check_neighbours():
+def find_adj_numbers(index):
+    ...
+
+
+def gear_ratio_finder():
     """Main function used to check the above and below members of each
     line. Figures out which numbers are in the footprint of the symbols
     of the above and below line and just summs them up
     """
-    summ = 0
+    # pprint(lines_list)
+
     for index, row in enumerate(lines_list):
-        # print("index:", index)
-        # pprint(lines_list)
+        print("index:", index)
+        symbols_in_line = []
+        for symbol in row["symbols"]:
+            symbols_in_line.append(symbol["symbol"])
+        if "*" in symbols_in_line:
+            # print(row["symbols"])
+            for symbol_in_line in lines_list[index]["symbols"]:
+                adjacent_numbers = []
+                symbols_index = symbol_in_line["index"]
+                # print(symbol_in_line)
+                if index == 0:
+                    for number in lines_list[index]["numbers"]:
+                        # print("current", number["index"])
+                        inter_index = list(set(number["index"]) & set(symbols_index))
+                        if inter_index:
+                            # print("currents", inter_index)
+                            adjacent_numbers.append(number["number"])
+                    for number in lines_list[index + 1]["numbers"]:
+                        # print("current", number["index"])
+                        inter_index = list(set(number["index"]) & set(symbols_index))
+                        if inter_index:
+                            # print("currents", inter_index)
+                            adjacent_numbers.append(number["number"])
+                elif index == len(lines_list) - 1:
+                    for number in lines_list[index - 1]["numbers"]:
+                        # print("prev", number)
+                        inter_index = list(set(number["index"]) & set(symbols_index))
+                        if inter_index:
+                            # print("prevs", inter_index)
+                            adjacent_numbers.append(number["number"])
+                    for number in lines_list[index]["numbers"]:
+                        # print("current", number["index"])
+                        inter_index = list(set(number["index"]) & set(symbols_index))
+                        if inter_index:
+                            # print("currents", inter_index)
+                            adjacent_numbers.append(number["number"])
+                else:
+                    for number in lines_list[index - 1]["numbers"]:
+                        # print("prev", number)
+                        inter_index = list(set(number["index"]) & set(symbols_index))
+                        if inter_index:
+                            # print("prevs", inter_index)
+                            adjacent_numbers.append(number["number"])
+                    for number in lines_list[index]["numbers"]:
+                        # print("current", number["index"])
+                        inter_index = list(set(number["index"]) & set(symbols_index))
+                        if inter_index:
+                            # print("currents", inter_index)
+                            adjacent_numbers.append(number["number"])
+                    for number in lines_list[index + 1]["numbers"]:
+                        # print("current", number["index"])
+                        inter_index = list(set(number["index"]) & set(symbols_index))
+                        if inter_index:
+                            # print("currents", inter_index)
+                            adjacent_numbers.append(number["number"])
+                print(
+                    f"Symbol in line:{symbol_in_line}, adjacent_numbers:{adjacent_numbers}"
+                )
 
-        symbol_fields = []
-        numbers_index = []
-        if index == 0:
-            for symbol in lines_list[index]["symbols"]:
-                symbol_fields.extend(symbol["index"])
-            for symbol in lines_list[index + 1]["symbols"]:
-                symbol_fields.extend(symbol["index"])
+                # print("current", lines_list[index]["numbers"])
 
-        elif index == len(lines_list) - 1:
-            for symbol in lines_list[index - 1]["symbols"]:
-                symbol_fields.extend(symbol["index"])
-            for symbol in lines_list[index]["symbols"]:
-                symbol_fields.extend(symbol["index"])
+                # print("next", lines_list[index + 1])
 
-        else:
-            for symbol in lines_list[index - 1]["symbols"]:
-                symbol_fields.extend(symbol["index"])
-            for symbol in lines_list[index]["symbols"]:
-                symbol_fields.extend(symbol["index"])
-            for symbol in lines_list[index + 1]["symbols"]:
-                symbol_fields.extend(symbol["index"])
-
-        for numbers in lines_list[index]["numbers"]:
-            numbers_index.extend(numbers["index"])
-            # print(numbers["index"])
-        # print(row["symbols"])
-        # print("symbols", symbol_fields)
-        # print("numbers", numbers_index)
-
-        inter_indexes = list(set(symbol_fields) & set(numbers_index))
-        # print(inter_indexes)
-        if len(inter_indexes) >= 1:
-            for numbers in row["numbers"]:
-                # print(numbers["index"])
-                if len(list(set(numbers["index"]) & set(inter_indexes))) > 0:
-                    summ += numbers["number"]
-                # print(numbers)
-
-        # print("\n")
-    print(summ)
+    return
     # print(lines_list[index + 1])
 
-
-# Need to create symbol index checker between adjascent lines
-#
 
 if __name__ == "__main__":
     # test_row = line_parser(
@@ -124,11 +131,12 @@ if __name__ == "__main__":
     # )
     lines_list = []
 
-    with open("puzzle_inputs/day3.txt", "r") as file:
+    with open("puzzle_inputs/test3.txt", "r") as file:
         for line in file:
             current_line = line_parser(line)
             lines_list.append(current_line)
     # print(current_line)
     symbol_appender()
-    check_neighbours()
+    gear_ratio_finder()
+    # check_neighbours()
     # print(lines_list)
