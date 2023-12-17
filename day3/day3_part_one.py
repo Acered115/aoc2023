@@ -49,7 +49,6 @@ def symbol_appender():
         for symbol in row["symbols"]:
             symbol["index"].insert(0, symbol["index"][0] - 1)
             symbol["index"].append(symbol["index"][-1] + 1)
-    # print(row)
 
 
 def check_neighbours():
