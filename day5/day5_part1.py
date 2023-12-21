@@ -77,7 +77,7 @@ def parse_map(maps_obj, seed: int):
 
 
 def main():
-    with open("puzzle_inputs/day5.txt", "r") as file:
+    with open("puzzle_inputs/test5.txt", "r") as file:
         obj = ParseMaps(file)
 
     seeds = obj.maps_obj["seeds"]
@@ -89,4 +89,7 @@ def main():
 
 
 if __name__ == "__main__":
+    ### This solution works on small tests...
+    ### However with the big data set it just breaks my laptop lol
+    ### Need to rework and figure this out lol
     main()
