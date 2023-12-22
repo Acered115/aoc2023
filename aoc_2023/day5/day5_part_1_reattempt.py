@@ -51,9 +51,11 @@ def reverse_parse_map(maps_obj, seed: int):
             continue
         for row in maps_obj[map_]:
             print(row)
-            mapped_sources = np.arange(row[1], row[1] + row[2])
+            source = row[1]
+            range_ = row[2]
             # print("The Range", mapped_sources)
-            if seed in mapped_sources:
+            if seed <= source + range_ and seed > source:
+                # print(row[1], row[2], source + range_)
                 print(f"The seed is mapped: {seed}")
                 displacement = seed - row[1]
                 dest = row[0] + displacement
@@ -68,7 +70,7 @@ def reverse_parse_map(maps_obj, seed: int):
 
 
 if __name__ == "__main__":
-    with open("puzzle_inputs/test5.txt", "r") as file:
+    with open("puzzle_inputs/day5.txt", "r") as file:
         obj = ParseMaps(file)
     locations = []
     t0 = time.time()
