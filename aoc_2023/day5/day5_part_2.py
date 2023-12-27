@@ -42,6 +42,7 @@ class ParseMaps:
 
 
 def reverse_parse_map(maps_obj, seed: int):
+    dest = 0
     for map_ in maps_obj.keys():
         print(map_)
         if map_ == "seeds":
@@ -65,13 +66,39 @@ def reverse_parse_map(maps_obj, seed: int):
     return dest
 
 
+def check_seed_to_soil(maps_obj, seed, range_):
+    print(maps_obj["seed-to_soil"])
+
+    return
+
+
 if __name__ == "__main__":
-    with open("puzzle_inputs/day5.txt", "r") as file:
+    with open("puzzle_inputs/test5.txt", "r") as file:
         obj = ParseMaps(file)
+    list_of_ranges = []
+    seeds = []
+    numbers = []
+    for index, seed in enumerate(obj.maps_obj["seeds"]):
+        if index % 2:
+            list_of_ranges.append((index, seed))
+
+        else:
+            seeds.append((index, seed))
+            print(seed, obj.maps_obj["seeds"][index + 1])
+            numbers.append(seed + obj.maps_obj["seeds"][index + 1])
+            pass
+        # seeds.pop(index)
+    print(seeds)
+    print(list_of_ranges)
+    print(numbers)
     locations = []
     t0 = time.time()
-    for seed in obj.maps_obj["seeds"]:
-        locations.append(reverse_parse_map(obj.maps_obj, seed))
+
+    # for seed in obj.maps_obj["seeds"]:
+    #     locations.append(reverse_parse_map(obj.maps_obj, seed))
+    # for x in len()
+
+    # check_seed_to_soil()
 
     print("\n")
     print(f"It took {round(time.time()-t0, 4)} seconds to run this program")
