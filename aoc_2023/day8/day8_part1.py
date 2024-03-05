@@ -32,7 +32,7 @@ def parse_file(file):
     return directions, line_list
 
 
-def traverse_directions(directions, line_list):
+def traverse_directions(this, directions, line_list):
     index = 0
     loop = True
     this = "AAA"
